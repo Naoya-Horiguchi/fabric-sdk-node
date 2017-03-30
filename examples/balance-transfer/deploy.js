@@ -56,10 +56,13 @@ function init() {
 hfc.newDefaultKeyValueStore({
 	path: config.keyValueStore
 }).then(function(store) {
+logger.info("test 8", config);
 	client.setStateStore(store);
+logger.info("test 8.1", store);
 	return helper.getSubmitter(client);
 }).then(
 	function(admin) {
+logger.info("test 9");
 		logger.info('Successfully obtained enrolled user to deploy the chaincode');
 
 		logger.info('Executing Deploy');

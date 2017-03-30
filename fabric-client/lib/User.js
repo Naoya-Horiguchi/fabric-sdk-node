@@ -213,7 +213,7 @@ var User = class {
 	 * @return {Member} Promise of the unmarshalled Member object represented by the serialized string
 	 */
 	fromString(str) {
-		logger.debug('fromString --start');
+		logger.info('fromString --start');
 		var state = JSON.parse(str);
 
 		if (state.name !== this.getName()) {

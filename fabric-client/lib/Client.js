@@ -534,6 +534,7 @@ var Client = class {
 		var err = '';
 
 		var methods = sdkUtils.getClassMethods(api.KeyValueStore);
+logger.info("test 8.0.1", methods);
 		methods.forEach(function(m) {
 			if (typeof keyValueStore[m] !== 'function') {
 				err += m + '() ';
@@ -603,13 +604,13 @@ var Client = class {
 	 * @returns {Promise} Promise of the 'user' object upon successful persistence of the user to the state store
 	 */
 	setUserContext(user, skipPersistence) {
-		logger.debug('setUserContext, user: ' + user + ', skipPersistence: ' + skipPersistence);
+		logger.info('setUserContext, user: ' + user + ', skipPersistence: ' + skipPersistence);
 		var self = this;
 		return new Promise((resolve, reject) => {
 			if (user) {
 				self._userContext = user;
 				if (!skipPersistence) {
-					logger.debug('setUserContext begin promise to saveUserToStateStore');
+					logger.info('setUserContext begin promise to saveUserToStateStore');
 					self.saveUserToStateStore()
 					.then((user) => {
 						return resolve(user);
@@ -617,11 +618,11 @@ var Client = class {
 						reject(err);
 					});
 				} else {
-					logger.debug('setUserContext, resolved user');
+					logger.info('setUserContext, resolved user');
 					return resolve(user);
 				}
 			} else {
-				logger.debug('setUserContext, Cannot save null userContext');
+				logger.info('setUserContext, Cannot save null userContext');
 				reject(new Error('Cannot save null userContext.'));
 			}
 		});
@@ -643,13 +644,17 @@ var Client = class {
 	getUserContext(name) {
 		var self = this;
 		var username = name;
+logger.info("test 8.1.1.1");
 		return new Promise(function(resolve, reject) {
 			if (self._userContext) {
+logger.info("test 8.1.1.2");
 				return resolve(self._userContext);
 			} else {
+logger.info("test 8.1.1.3");
 				if (typeof username === 'undefined' || !username) {
 					return resolve(null);
 				}
+logger.info("test 8.1.1.4");
 
 				// this could be because the application has not set a user context yet for this client, which would
 				// be an error condiditon, or it could be that this app has crashed before and is recovering, so we
@@ -657,27 +662,34 @@ var Client = class {
 
 				// first check if there is a user context of the specified name in persistence
 				if (self._stateStore) {
+logger.info("test 8.1.1.5");
 					self.loadUserFromStateStore(username).then(
 						function(userContext) {
+logger.info("test 8.1.1.6", userContext);
 							if (userContext) {
-								logger.debug('Requested user "%s" loaded successfully from the state store on this Client instance: name - %s', name, name);
+logger.info("test 8.1.1.7");
+								logger.info('Requested user "%s" loaded successfully from the state store on this Client instance: name - %s', name, name);
 								return self.setUserContext(userContext, false);
 							} else {
-								logger.debug('Requested user "%s" not loaded from the state store on this Client instance: name - %s', name, name);
+logger.info("test 8.1.1.8");
+								logger.info('Requested user "%s" not loaded from the state store on this Client instance: name - %s', name, name);
 								return null;
 							}
 						}
 					).then(
 						function(userContext) {
+logger.info("test 8.1.1.9", userContext);
 							return resolve(userContext);
 						}
 					).catch(
 						function(err) {
+logger.info("test 8.1.1.10");
 							logger.error('Failed to load an instance of requested user "%s" from the state store on this Client instance. Error: %s', name, err.stack ? err.stack : err);
 							reject(err);
 						}
 					);
 				} else {
+logger.info("test 8.1.1.6");
 					// we don't have it in memory or persistence, just return null
 					return resolve(null);
 				}
@@ -693,29 +705,40 @@ var Client = class {
 	loadUserFromStateStore(name) {
 		var self = this;
 
+logger.info("test 8.1.2.1", name);
 		return new Promise(function(resolve, reject) {
+logger.info("test 8.1.2.2", self._stateStore, name);
+logger.info("test 8.1.2.2", self._stateStore.getValue(name));
 			self._stateStore.getValue(name)
 			.then(
 				function(memberStr) {
+logger.info("test 8.1.2.3", memberStr);
 					if (memberStr) {
 						// The member was found in the key value store, so restore the state.
 						var newUser = new User(name);
+logger.info("test 8.1.2.3.1", newUser);
+logger.info("test 8.1.2.3.1.1", newUser.fromString(memberStr));
 
 						return newUser.fromString(memberStr);
 					} else {
+logger.info("test 8.1.2.3.2");
 						return null;
 					}
 				})
 			.then(function(data) {
+logger.info("test 8.1.2.4");
 				if (data) {
+logger.info("test 8.1.2.5");
 					logger.info('Successfully loaded user "%s" from local key value store', name);
 					return resolve(data);
 				} else {
+logger.info("test 8.1.2.6");
 					logger.info('Failed to load user "%s" from local key value store', name);
 					return resolve(null);
 				}
 			}).catch(
 				function(err) {
+logger.info("test 8.1.2.7");
 					logger.error('Failed to load user "%s" from local key value store. Error: %s', name, err.stack ? err.stack : err);
 					reject(err);
 				}

@@ -34,18 +34,22 @@ module.exports.getSubmitter = function(client) {
 	var username = users[0].username;
 	var password = users[0].secret;
 	var member;
+	logger.info("test 8.1.1");
 	return client.getUserContext(username)
 		.then((user) => {
 			if (user && user.isEnrolled()) {
+	logger.info("test 8.1.2");
 				logger.info('Successfully loaded member from persistence');
 				return user;
 			} else {
 				var ca_client = new copService(config.caserver.ca_url);
 				// need to enroll it with CA server
+	logger.info("test 8.1.3");
 				return ca_client.enroll({
 					enrollmentID: username,
 					enrollmentSecret: password
 				}).then((enrollment) => {
+	logger.info("test 8.1.4");
 					logger.info('Successfully enrolled user \'' + username + '\'');
 
 					member = new User(username, client);
@@ -55,6 +59,7 @@ module.exports.getSubmitter = function(client) {
 				}).then(() => {
 					return member;
 				}).catch((err) => {
+	logger.info("test 8.1.5");
 					logger.error('Failed to enroll and persist user. Error: ' + err.stack ? err.stack : err);
 					throw new Error('Failed to obtain an enrolled user');
 				});

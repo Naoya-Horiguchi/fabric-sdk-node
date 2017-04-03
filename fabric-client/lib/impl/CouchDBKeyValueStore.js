@@ -122,6 +122,7 @@ var CouchDBKeyValueStore = class extends api.KeyValueStore {
 					}
 				} else {
 					logger.debug('getValue: ' + name + ', Retrieved message from member_db.');
+logger.info("### 800", body.member);
 					return resolve(body.member);
 				}
 			});
@@ -139,6 +140,7 @@ var CouchDBKeyValueStore = class extends api.KeyValueStore {
 		logger.debug('setValue: ' + name);
 
 		var self = this;
+logger.info("### 230", name, value);
 
 		return new Promise(function(resolve, reject) {
 			// Attempt to retrieve from the database to see if the entry exists
@@ -146,26 +148,32 @@ var CouchDBKeyValueStore = class extends api.KeyValueStore {
 				// Check for error on retrieving from database
 				if (err) {
 					if (err.error !== 'not_found') {
+logger.info("### 231");
 						logger.error('setValue: ' + name + ', ERROR: [member_db.get] - ', err.error);
 						reject(err.error);
 					} else {
 						// Entry does not exist
 						logger.debug('setValue: ' + name + ', Entry does not exist, insert it.');
+logger.info("### 240");
 						self._dbInsert({ _id: name, member: value })
 						.then( function (status) {
 							logger.debug('setValue add: ' + name + ', status: ' + status);
+logger.info("### 242");
 							if (status == true) resolve(value);
 							else reject(new Error('Couch database insert add failed.'));
 						});
 					}
 				} else {
 					// Entry already exists and must be updated
+logger.info("### 248");
 					logger.debug('setValue: ' + name + ', Retrieved entry from member_db.');
 
 					// Update the database entry using the latest rev number
 					logger.debug('setValue: ' + name + ', Latest rev number : ' + body._rev);
+logger.info("### 249");
 					self._dbInsert({ _id: name, _rev: body._rev, member: value })
 					.then( function (status) {
+logger.info("### 255", status);
 						logger.debug('setValue update: ' + name + ', status: ' + status);
 						if (status == true) resolve(value);
 						else reject(new Error('Couch database insert update failed.'));
@@ -176,7 +184,8 @@ var CouchDBKeyValueStore = class extends api.KeyValueStore {
 	}
 
 	_dbInsert(options) {
-		logger.debug('setValue, _dbInsert, options: ' + JSON.stringify(options));
+logger.info("### 300", this._database.constructor.name);
+		logger.info('setValue, _dbInsert, options: ' + JSON.stringify(options));
 		var self = this;
 		return new Promise(function(resolve,reject) {
 			self._database.insert(options, function(err, body, header) {

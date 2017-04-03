@@ -662,10 +662,10 @@ logger.info("test 8.1.1.4");
 
 				// first check if there is a user context of the specified name in persistence
 				if (self._stateStore) {
-logger.info("test 8.1.1.5");
+logger.info("test 8.1.1.5 --> ", self._stateStore);
 					self.loadUserFromStateStore(username).then(
 						function(userContext) {
-logger.info("test 8.1.1.6", userContext);
+logger.info("test 8.1.1.6 --> ", userContext);
 							if (userContext) {
 logger.info("test 8.1.1.7");
 								logger.info('Requested user "%s" loaded successfully from the state store on this Client instance: name - %s', name, name);
@@ -708,7 +708,6 @@ logger.info("test 8.1.1.6");
 logger.info("test 8.1.2.1", name);
 		return new Promise(function(resolve, reject) {
 logger.info("test 8.1.2.2", self._stateStore, name);
-logger.info("test 8.1.2.2", self._stateStore.getValue(name));
 			self._stateStore.getValue(name)
 			.then(
 				function(memberStr) {
@@ -717,7 +716,6 @@ logger.info("test 8.1.2.3", memberStr);
 						// The member was found in the key value store, so restore the state.
 						var newUser = new User(name);
 logger.info("test 8.1.2.3.1", newUser);
-logger.info("test 8.1.2.3.1.1", newUser.fromString(memberStr));
 
 						return newUser.fromString(memberStr);
 					} else {

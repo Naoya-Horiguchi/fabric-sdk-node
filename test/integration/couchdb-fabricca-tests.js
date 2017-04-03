@@ -149,10 +149,12 @@ test('Use FabricCAServices with a CouchDB KeyValueStore', function(t) {
 		.then(
 			function(user) {
 				t.comment('loading user admin2 from StateStore...');
+				logger.info("### 100");
 				return client.loadUserFromStateStore('admin2');
 			}
 		).then(
 			function(user) {
+logger.info("### 400");
 				if (user && user.getName() === 'admin2') {
 					t.pass('Successfully loaded the user from key value store');
 					t.end();
@@ -160,6 +162,7 @@ test('Use FabricCAServices with a CouchDB KeyValueStore', function(t) {
 					t.fail('Failed to load the user from key value store');
 					t.end();
 				}
+logger.info("### 101");
 			},
 			function(err) {
 				t.fail('Failed to load the user admin2 from key value store. Error:');

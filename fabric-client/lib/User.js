@@ -230,6 +230,7 @@ var User = class {
 			throw new Error('Failed to find "mspid" in the deserialized state object for the user. Likely due to an outdated state store.');
 		}
 
+logger.info("### 140");
 		this._mspImpl = new LocalMSP({
 			id: state.mspid,
 			cryptoSuite: this._kvsCryptoOpts ? sdkUtils.newCryptoSuite(
@@ -244,14 +245,17 @@ var User = class {
 		.then((key) => {
 			pubKey = key;
 
+logger.info("### 150");
 			var identity = new Identity(state.enrollment.identity.id, state.enrollment.identity.certificate, pubKey, self._mspImpl);
 			self._identity = identity;
 
 			// during serialization (see toString() below) only the key's SKI are saved
 			// swap out that for the real key from the crypto provider
+logger.info("### 155", state.enrollment.signingIdentity)
 			return self._mspImpl.cryptoSuite.getKey(state.enrollment.signingIdentity);
 		}).then((privateKey) => {
 			// the key retrieved from the key store using the SKI could be a public key
+logger.info("### 160");
 			// or a private key, check to make sure it's a private key
 			if (privateKey.isPrivate()) {
 				self._signingIdentity = new SigningIdentity(
@@ -260,6 +264,7 @@ var User = class {
 					pubKey,
 					self._mspImpl,
 					new Signer(self._mspImpl.cryptoSuite, privateKey));
+logger.info("### 170");
 
 				return self;
 			} else {

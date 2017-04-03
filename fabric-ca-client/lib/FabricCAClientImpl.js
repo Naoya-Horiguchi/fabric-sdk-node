@@ -133,14 +133,16 @@ var FabricCAServices = class {
 
 			var enrollmentID = req.enrollmentID;
 			var enrollmentSecret = req.enrollmentSecret;
-
+logger.info("### 1000");
 			//generate enrollment certificate pair for signing
 			self.cryptoPrimitives.generateKey()
 				.then(
 				function (privateKey) {
+logger.info("### 1001");
 					//generate CSR using enrollmentID for the subject
 					try {
 						var csr = privateKey.generateCSR('CN=' + req.enrollmentID);
+logger.info("~2~~~~~~~~~~~~~~>", csr);
 						self._fabricCAClient.enroll(req.enrollmentID, req.enrollmentSecret, csr)
 							.then(
 							function (enrollResponse) {
@@ -521,6 +523,7 @@ var FabricCAClient = class {
 				ca: self._tlsOptions.trustedRoots,
 				rejectUnauthorized: self._tlsOptions.verify
 			};
+logger.info("==3========> ", requestOptions);
 
 			var enrollRequest = {
 				certificate_request: csr
@@ -543,7 +546,9 @@ var FabricCAClient = class {
 					}
 					//response should be JSON
 					try {
+// logger.info("=4=========> ", payload);
 						var res = JSON.parse(payload);
+// logger.info("==5========> ", res);
 						if (res.success) {
 							//we want the result field which is Base64-encoded PEM
 							var enrollResponse = new Object();
@@ -563,6 +568,7 @@ var FabricCAClient = class {
 				});
 
 			});
+// logger.info("==6========> ", request);
 
 			request.on('error', function (err) {
 				reject(new Error(util.format('Calling enrollment endpoint failed with error [%s]', err)));

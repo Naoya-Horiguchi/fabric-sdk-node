@@ -146,19 +146,25 @@ var CryptoSuite_ECDSA_AES = class extends api.CryptoSuite {
 	generateKey(opts) {
 		var pair = KEYUTIL.generateKeypair('EC', this._curveName);
 
+logger.info("### 1040");
 		if (typeof opts !== 'undefined' && typeof opts.ephemeral !== 'undefined' && opts.ephemeral === true) {
+logger.info("### 1043");
 			return Promise.resolve(new ECDSAKey(pair.prvKeyObj));
 		} else {
 			// unless "opts.ephemeral" is explicitly set to "true", default to saving the key
 			var key = new ECDSAKey(pair.prvKeyObj);
+logger.info("### 1048");
 
 			var self = this;
 			return new Promise((resolve, reject) => {
+logger.info("### 1050");
 				self._getKeyStore()
 				.then ((store) => {
+logger.info("### 1055");
 					logger.debug('generateKey, store.setValue');
 					return store.putKey(key)
 						.then(() => {
+logger.info("### 1058");
 							return resolve(key);
 						}).catch((err) => {
 							reject(err);
@@ -280,6 +286,7 @@ var CryptoSuite_ECDSA_AES = class extends api.CryptoSuite {
 
 	_getKeyStore() {
 		var self = this;
+logger.info("### 1080");
 		return new Promise((resolve, reject) => {
 			if (self._store === null) {
 				logger.info(util.format('This class requires a CryptoKeyStore to save keys, using the store: %j', self._storeConfig));

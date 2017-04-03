@@ -34,11 +34,11 @@ module.exports.getSubmitter = function(client) {
 	var username = users[0].username;
 	var password = users[0].secret;
 	var member;
-	logger.info("test 8.1.1");
+	logger.info("test 8.1.1", username, password);
 	return client.getUserContext(username)
 		.then((user) => {
 			if (user && user.isEnrolled()) {
-	logger.info("test 8.1.2");
+	logger.info("test 8.1.2", user.isEnrolled());
 				logger.info('Successfully loaded member from persistence');
 				return user;
 			} else {

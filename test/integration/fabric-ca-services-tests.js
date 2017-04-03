@@ -75,6 +75,7 @@ test('FabricCAServices: Test enroll() With Dynamic CSR', function (t) {
 	};
 
 	var eResult, client, member, webAdmin;
+logger.info("----7---------->", req);
 	return caService.enroll(req)
 		.then((enrollment) => {
 			t.pass('Successfully enrolled \'' + req.enrollmentID + '\'.');

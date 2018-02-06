@@ -62,7 +62,7 @@ var FileKeyValueStore = class extends api.KeyValueStore {
 	}
 
 	getValue(name) {
-		logger.debug('FileKeyValueStore -- getValue');
+		logger.debug('FileKeyValueStore -- getValue ' + name);
 
 		var self = this;
 
@@ -82,7 +82,7 @@ var FileKeyValueStore = class extends api.KeyValueStore {
 	}
 
 	setValue(name, value) {
-		logger.debug('FileKeyValueStore -- setValue');
+		logger.debug('FileKeyValueStore -- setValue ' + name);
 
 		var self = this;
 

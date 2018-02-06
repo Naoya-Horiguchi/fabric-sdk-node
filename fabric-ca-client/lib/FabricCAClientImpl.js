@@ -833,9 +833,9 @@ var FabricCAClient = class {
 			if(attr_reqs) {
 				enrollRequest.attr_reqs = attr_reqs;
 			}
-
+			console.log("100: " + util.inspect(requestOptions));
 			var request = self._httpClient.request(requestOptions, function (response) {
-
+				console.log("101: ");
 				const responseBody = [];
 				response.on('data', function (chunk) {
 					responseBody.push(chunk);

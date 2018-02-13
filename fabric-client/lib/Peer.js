@@ -105,7 +105,7 @@ var Peer = class extends Remote {
 	 * @returns {Promise} A Promise for a {@link ProposalResponse}
 	 */
 	sendProposal(proposal, timeout) {
-		logger.debug('Peer.sendProposal - Start');
+		logger.error('#800 Peer.sendProposal - Start');
 		let self = this;
 		let rto = self._request_timeout;
 		if (typeof timeout === 'number')
@@ -124,6 +124,7 @@ var Peer = class extends Remote {
 				return reject(new Error('REQUEST_TIMEOUT'));
 			}, rto);
 
+			logger.error('#801 ');
 			self._endorserClient.processProposal(proposal, function(err, proposalResponse) {
 				clearTimeout(send_timeout);
 				if (err) {

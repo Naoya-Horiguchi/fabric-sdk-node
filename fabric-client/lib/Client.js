@@ -856,17 +856,19 @@ var Client = class extends BaseClient {
 	 * @returns {Promise} Promise for a {@link ChaincodeQueryResponse} object
 	 */
 	queryInstalledChaincodes(peer, useAdmin) {
-		logger.debug('queryInstalledChaincodes - start peer %s',peer);
+		logger.error('### 500 queryInstalledChaincodes - start peer %s, useAdmin %s', peer, useAdmin);
 		var targets = null;
 		if(!peer) {
 			return Promise.reject( new Error('Peer is required'));
 		} else {
+			logger.error('### 501');
 			try {
 				targets = this.getTargetPeers(peer);
 			} catch (err) {
 				return Promise.reject(err);
 			}
 		}
+		logger.error('### 502 ' + util.inspect(targets));
 		var self = this;
 		var signer = this._getSigningIdentity(useAdmin);
 		var txId = new TransactionID(signer, useAdmin);
@@ -878,20 +880,23 @@ var Client = class extends BaseClient {
 			fcn : 'getinstalledchaincodes',
 			args: []
 		};
+		logger.error('### 503');
 		return Channel.sendTransactionProposal(request, '' /* special channel id */, self)
 		.then(
 			function(results) {
 				var responses = results[0];
-				logger.debug('queryInstalledChaincodes - got response');
+				logger.error('### 504 queryInstalledChaincodes - got response');
 				if(responses && Array.isArray(responses)) {
 					//will only be one response as we are only querying one peer
 					if(responses.length > 1) {
 						return Promise.reject(new Error('Too many results returned'));
 					}
 					let response = responses[0];
+					logger.error('### 505 ' + response);
 					if(response instanceof Error ) {
 						return Promise.reject(response);
 					}
+					logger.error('### 506 ' + response.response);
 					if(response.response) {
 						logger.debug('queryInstalledChaincodes - response status :: %d', response.response.status);
 						var queryTrans = _queryProto.ChaincodeQueryResponse.decode(response.response.payload);
@@ -1858,6 +1863,7 @@ function _getNetworkConfig(config, client) {
 	var method = '_getNetworkConfig';
 	var network_config = null;
 	var network_data = null;
+	logger.error(util.format('==> AAA3 %s\n', config));
 	if(typeof config === 'string') {
 		var config_loc = path.resolve(config);
 		logger.debug('%s - looking at absolute path of ==>%s<==',method,config_loc);
@@ -1874,9 +1880,12 @@ function _getNetworkConfig(config, client) {
 	}
 
 	var error_msg = null;
+	logger.error('==> AAA0');
 	if(network_data) {
 		if(network_data.version) {
+			logger.error('==> AAA1');
 			let parsing = Client.getConfigSetting('network-config-schema');
+			logger.error('==> AAA2');
 			if(parsing) {
 				let pieces = network_data.version.toString().split('.');
 				let version = pieces[0] + '.' + pieces[1];

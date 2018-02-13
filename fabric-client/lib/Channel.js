@@ -1342,12 +1342,14 @@ var Channel = class {
 	 * @returns {Promise} A Promise for the {@link ProposalResponseObject}
 	 */
 	sendTransactionProposal(request, timeout) {
-		logger.debug('sendTransactionProposal - start');
+		logger.error('#600 sendTransactionProposal - start');
 
 		if(!request) {
 			throw new Error('Missing request object for this transaction proposal');
 		}
+		logger.error('#601');
 		request.targets = this._getTargets(request.targets, Constants.NetworkConfig.ENDORSING_PEER_ROLE);
+		logger.error('#602 ' + request.targets);
 
 		return Channel.sendTransactionProposal(request, this._name, this._clientContext, timeout);
 	}
@@ -1359,6 +1361,7 @@ var Channel = class {
 	static sendTransactionProposal(request, channelId, clientContext, timeout) {
 		// Verify that a Peer has been added
 		var errorMsg = clientUtils.checkProposalRequest(request);
+		logger.error('#603 ');
 
 		if (errorMsg){
 			// do nothing so we skip the rest of the checks
@@ -1368,20 +1371,24 @@ var Channel = class {
 		} else if (!request.targets || request.targets.length < 1) {
 			errorMsg = 'Missing peer objects in Transaction proposal';
 		}
+		logger.error('#604 ');
 
 		if(errorMsg) {
 			logger.error('sendTransactionProposal error '+ errorMsg);
 			throw new Error(errorMsg);
 		}
+		logger.error('#605 ');
 
 		var args = [];
 		args.push(Buffer.from(request.fcn ? request.fcn : 'invoke', 'utf8'));
 		logger.debug('sendTransactionProposal - adding function arg:%s', request.fcn ? request.fcn : 'invoke');
+		logger.error('#606 ');
 
 		for (let i=0; i<request.args.length; i++) {
 			logger.debug('sendTransactionProposal - adding arg:%s', request.args[i]);
 			args.push(Buffer.from(request.args[i], 'utf8'));
 		}
+		logger.error('#607 ');
 		//special case to support the bytes argument of the query by hash
 		if(request.argbytes) {
 			logger.debug('sendTransactionProposal - adding the argument :: argbytes');
@@ -1390,6 +1397,7 @@ var Channel = class {
 		else {
 			logger.debug('sendTransactionProposal - not adding the argument :: argbytes');
 		}
+		logger.error('#608 ');
 		let invokeSpec = {
 			type: _ccProto.ChaincodeSpec.Type.GOLANG,
 			chaincode_id: {
@@ -1402,6 +1410,7 @@ var Channel = class {
 
 		var proposal, header;
 		var signer = null;
+		logger.error('#609 ');
 		if(request.signer) {
 			signer = request.signer;
 		} else {
@@ -1414,17 +1423,22 @@ var Channel = class {
 			null,
 			request.chaincodeId
 			);
+		logger.error('#610 ');
 		header = clientUtils.buildHeader(signer, channelHeader, request.txId.getNonce());
 		proposal = clientUtils.buildProposal(invokeSpec, header, request.transientMap);
+		logger.error('#611 ' + proposal);
 		let signed_proposal = clientUtils.signProposal(signer, proposal);
 
+		logger.error('#612 ' + signed_proposal);
 		return clientUtils.sendPeersProposal(request.targets, signed_proposal, timeout)
 		.then(
 			function(responses) {
+				logger.error('#613 ' + util.inspect(responses));
 				return Promise.resolve([responses, proposal]);
 			}
 		).catch(
 			function(err) {
+				logger.error('#614 ' + err);
 				logger.error('Failed Proposal. Error: %s', err.stack ? err.stack : err);
 				return Promise.reject(err);
 			}

@@ -84,7 +84,7 @@ var Orderer = class extends Remote {
 	 * @returns {Promise} A Promise for a {@link BroadcastResponse} object
 	 */
 	sendBroadcast(envelope) {
-		logger.debug('sendBroadcast - start');
+		logger.error('#1400 sendBroadcast - start');
 
 		if(!envelope || envelope == '') {
 			logger.debug('sendBroadcast ERROR - missing envelope');
@@ -104,18 +104,19 @@ var Orderer = class extends Remote {
 				return reject(new Error('REQUEST_TIMEOUT'));
 			}, self._request_timeout);
 
+			logger.error('#1401');
 			broadcast.on('data', function (response) {
-				logger.debug('sendBroadcast - on data response: %j', response);
+				logger.error('#1402 sendBroadcast - on data response: %j', response);
 				broadcast.end();
 				if(response.info) {
-					logger.debug('sendBroadcast - response info :: %s', response.info);
+					logger.error('#1403 sendBroadcast - response info :: %s', response.info);
 				}
 				if(response.status) {
 					if (response.status === 'SUCCESS') {
-						logger.debug('sendBroadcast - resolve with %s', response.status);
+						logger.error('#1404 sendBroadcast - resolve with %s', response.status);
 						return resolve(response);
 					} else {
-						logger.error('sendBroadcast - reject with %s', response.status);
+						logger.error('#1405 sendBroadcast - reject with %s', response.status);
 						return reject(new Error(response.status));
 					}
 				}

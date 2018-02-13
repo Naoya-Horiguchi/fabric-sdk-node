@@ -73,6 +73,8 @@ module.exports.sendPeersProposal = function (peers, proposal, timeout) {
 	if (!Array.isArray(peers)) {
 		peers = [peers];
 	}
+
+	console.log("#700");
 	// make function to return an individual promise
 	var fn = function (peer) {
 		return new Promise(function (resolve, reject) {
@@ -91,10 +93,12 @@ module.exports.sendPeersProposal = function (peers, proposal, timeout) {
 	};
 	// create array of promises mapping peers array to peer parameter
 	// settle all the promises and return array of responses
+	console.log("#701");
 	var promises = peers.map(fn);
 	var responses = [];
 	return settle(promises).then(function (results) {
 		results.forEach(function (result) {
+			console.log("#702");
 			if (result.isFulfilled()) {
 				logger.debug('sendPeersProposal - Promise is fulfilled: ' +
 					result.value());

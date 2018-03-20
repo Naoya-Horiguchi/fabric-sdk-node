@@ -891,7 +891,7 @@ var ChannelEventHub = class {
 	 * );
 	 */
 	registerBlockEvent(onEvent, onError, options) {
-		logger.debug('registerBlockEvent - start');
+		logger.info('registerBlockEvent - start');
 		if(!onEvent) {
 			throw new Error('Missing "onEvent" parameter');
 		}
@@ -905,6 +905,7 @@ var ChannelEventHub = class {
 
 		let block_registration_number = ++this._block_registrant_count;
 		let block_registration = new EventRegistration(onEvent, onError, options, true, default_disconnect);
+		logger.info('registerBlockEvent: block_registration_number: %d', block_registration_number);
 		this._blockRegistrations[block_registration_number] = block_registration;
 		let self = this;
 		if(startstop_mode > NO_START_STOP) {
